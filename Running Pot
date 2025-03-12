@@ -1,0 +1,17 @@
+ void setup() {
+    pinMode(LED1, OUTPUT);
+    pinMode(LED2, OUTPUT);
+    pinMode(LED3, OUTPUT);
+    pinMode(LED4, OUTPUT);
+    pinMode(LED5, OUTPUT);
+}
+void loop() {
+    int delayTime = analogRead(POT); 
+    delayTime = map(delayTime, 0, 1023, 50, 500); 
+    for (int i = 2; i <= 6; i++) {
+        digitalWrite(i, HIGH);
+        delay(delayTime);
+        digitalWrite(i, LOW);
+    }
+}
+
