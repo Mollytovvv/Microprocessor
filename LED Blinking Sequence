@@ -1,0 +1,34 @@
+const int ledPins[] = {2, 3, 4, 5, 6};  // LED 1 → Pin 2, LED 2 → Pin 3, etc.
+const int numLEDs = sizeof(ledPins) / sizeof(ledPins[0]);
+
+// Updated sequences for blinking patterns
+const int sequences[][5] = {
+  {1, 3, 5, 0, 0},  // 1. LEDs 1, 3, 5 blink sequentially
+  {4, 2, 0, 0, 0},  // 2. LEDs 4 and 2 blink sequentially
+  {1, 2, 3, 4, 5},  // 3. All LEDs blink sequentially
+  {5, 3, 1, 0, 0},  // 4. LEDs 5, 3, and 1 blink in reverse order
+  {2, 4, 0, 0, 0},  // 5. LEDs 2 and 4 blink sequentially
+  {5, 4, 3, 2, 1}   // 6. LEDs 5, 4, 3, 2, 1 blink sequentially
+};
+
+const int numSequences = sizeof(sequences) / sizeof(sequences[0]);  // Number of sequences
+const int delayTime = 500;  // Delay time between LED states
+
+void setup() {
+  // Set LED pins as OUTPUT
+  for (int i = 0; i < numLEDs; i++) {
+    pinMode(ledPins[i], OUTPUT);
+  }
+}
+
+void loop() {
+  for (int seq = 0; seq < numSequences; seq++) {  // Go through each sequence
+    for (int i = 0; i < 5; i++) {  // Each sequence has max 5 LEDs
+      if (sequences[seq][i] == 0) break;  // Ignore empty slots
+      digitalWrite(ledPins[sequences[seq][i] - 1], HIGH); // Turn LED ON
+      delay(delayTime);
+      digitalWrite(ledPins[sequences[seq][i] - 1], LOW);  // Turn LED OFF
+    }
+    delay(1000);  // Wait before the next sequence
+  }
+}
