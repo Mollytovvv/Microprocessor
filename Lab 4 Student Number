@@ -1,0 +1,84 @@
+#include<Keypad.h>
+#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+const byte ROWS = 4;
+const byte COLS = 3;
+char keys[ROWS][COLS] = {
+{'1', '2', '3'}, 
+{'4', '5', '6'}, 
+{'7', '8', '9'}, 
+{'*', '0', '#'}
+};
+byte rowPins[ROWS] = {9, 8, 7, 6};
+byte colPins[COLS] = {5, 4, 3};
+Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
+const String validIDs[] = {"202116159", "202110121", "202013455"};
+const int numIDs = 3;
+String inputID = "";
+
+void setup() {
+lcd.init();
+lcd.backlight();
+Serial.begin(9600);
+lcd.clear();
+lcd.setCursor(0, 0);
+lcd.print("Student Number");
+lcd.setCursor(0,1);
+lcd.print(202116159);
+}
+void loop() {
+char key = keypad.getKey();
+if (key) {
+// If key is '#', check the entered ID
+if (key == '#') {
+checkStudentID();
+inputID = ""; // Reset for next entry
+}
+// If key is '*', clear the current input
+else if (key == '*') {
+inputID = "";
+lcd.clear();
+lcd.setCursor(0, 0);
+lcd.print("Input cleared");
+Serial.println("Input cleared");
+delay(1000);
+}
+// Otherwise, add the key to the input ID
+else if (key >= '0' && key <= '9') {
+inputID += key;
+// Update display
+lcd.clear();
+lcd.setCursor(0, 0);
+lcd.print("ID: " + inputID);
+
+Serial.print("Current input: ");
+Serial.println(inputID);
+}
+}
+}
+void checkStudentID() {
+bool isValid = false;
+// Check if the entered ID is in the hardcoded list
+for (int i = 0; i < numIDs; i++) {
+if (inputID == validIDs[i]) {
+isValid = true;
+break;
+}
+}
+lcd.clear();
+lcd.setCursor(0, 0);
+if (isValid) {
+lcd.print("Valid");
+Serial.println("Valid");
+} else {
+lcd.print("Invalid");
+Serial.println("Invalid");
+}
+delay(2000);
+// Reset for next entry
+lcd.clear();
+lcd.setCursor(0, 0);
+lcd.print("Student Number:");
+lcd.setCursor(0,1);
+lcd.print(202116159);
+}
